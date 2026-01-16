@@ -382,8 +382,9 @@ const getGap = (session, index) => {
 }
 
 .lap-total-time {
-    color: var(--color-text-muted);
+    color: var(--color-text-main);
     font-size: 0.9rem;
+    font-weight: 600;
     min-width: 60px;
     text-align: right;
     border-right: 1px solid var(--color-surface-highlight);
@@ -401,8 +402,7 @@ const getGap = (session, index) => {
 .lap-val {
     min-width: 70px;
     text-align: right;
-    font-weight: 600;
-    color: var(--color-text-main);
+    color: var(--color-text-muted);
 }
 
 .gap-slower {
