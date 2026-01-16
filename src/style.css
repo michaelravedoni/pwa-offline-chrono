@@ -1,11 +1,43 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Fonts */
+  --font-nums: 'JetBrains Mono', monospace;
+  --font-ui: 'Inter', sans-serif;
+
+  /* Color Palette - Dark Sport Theme */
+  --color-bg: #050505;
+  --color-surface: #1e1e1e;
+  --color-surface-hover: #252525;
+  --color-surface-active: #2d2d2d;
+  
+  /* Accents */
+  --color-primary: #00ff88;    /* Neon Green for Start/Positive */
+  --color-primary-dim: #00d572;
+  --color-danger: #ff004c;     /* Neon Red/Pink for Stop/Negative */
+  --color-danger-dim: #e10043;
+  --color-neutral: #34495e;    /* For secondary actions (Reset/Lap) */
+  --color-accent: #ffdd00;     /* Cyan for highlights/info */
+
+  /* Text */
+  --color-text-main: #ffffff;
+  --color-text-muted: #888888;
+  --color-text-dim: #555555;
+
+  /* UI Elements */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px; /* Pill shape */
+
+  --shadow-glow-primary: 0 0 15px rgba(0, 255, 136, 0.3);
+  --shadow-glow-danger: 0 0 15px rgba(255, 0, 76, 0.3);
+  
+  font-family: var(--font-ui);
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,14 +51,17 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  overflow: hidden; /* Prevent body scroll */
+  min-height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-bg);
 }
 
 #app {
   width: 100%;
-  height: 100vh;
+  height: 100%;
 }
 
 button {
   font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
 }

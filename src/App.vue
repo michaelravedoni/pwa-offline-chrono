@@ -36,35 +36,7 @@ const formatTabLabel = (ms) => {
 
 <template>
   <main class="app-container">
-    <!-- Help Button (Fixed Top Right) -->
-    <button class="help-trigger" @click="showHelp = true">?</button>
-
-    <!-- Help Modal -->
-    <HelpModal :is-open="showHelp" @close="showHelp = false" />
-
-    <!-- Tab Content -->
-    <div class="content-area">
-      <!-- Dynamic Stopwatch Tabs -->
-      <div 
-        v-for="index in activeChronosCount"
-        :key="index - 1"
-        v-show="activeTab === index - 1"
-        class="tab-content"
-      >
-        <StopwatchView 
-          :id="`chrono-${index - 1}`" 
-          :label="`Chrono ${index}`" 
-          :stopwatch="chronos[index - 1]"
-        />
-      </div>
-      
-      <!-- History Tab -->
-      <div v-show="activeTab === HISTORY_TAB" class="tab-content">
-          <HistoryView />
-      </div>
-    </div>
-
-    <!-- Navigation Tabs -->
+    <!-- Top Navigation Bar -->
     <nav class="tab-bar">
       <!-- Dynamic Chrono Tabs -->
       <button 
@@ -74,7 +46,6 @@ const formatTabLabel = (ms) => {
         :class="{ active: activeTab === i - 1 }"
         @click="activeTab = i - 1"
       >
-        <!-- Utilisation de la valeur 'elapsedTime' du chrono correspondant -->
         <span class="tab-time">{{ formatTabLabel(chronos[i-1].elapsedTime) }}</span>
       </button>
 
@@ -96,7 +67,35 @@ const formatTabLabel = (ms) => {
       >
         <span>Hist.</span>
       </button>
+
+      <!-- Help Button (Integrated in Nav) -->
+      <button class="help-trigger-nav" @click="showHelp = true">?</button>
     </nav>
+
+    <!-- Help Modal -->
+    <HelpModal :is-open="showHelp" @close="showHelp = false" />
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+      <!-- Dynamic Stopwatch Tabs -->
+      <div 
+        v-for="index in activeChronosCount"
+        :key="index - 1"
+        v-show="activeTab === index - 1"
+        class="tab-content"
+      >
+        <StopwatchView 
+          :id="`chrono-${index - 1}`" 
+          :label="`Chrono ${index}`" 
+          :stopwatch="chronos[index - 1]"
+        />
+      </div>
+      
+      <!-- History Tab -->
+      <div v-show="activeTab === HISTORY_TAB" class="tab-content history-wrapper">
+          <HistoryView />
+      </div>
+    </div>
   </main>
 </template>
 
@@ -104,61 +103,111 @@ const formatTabLabel = (ms) => {
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* fallback */
-  height: 100dvh;
-  background-color: #000;
-  color: #fff;
-  overflow: hidden;
+  height: 100vh;
+  height: 100dvh; /* Mobile viewport fix */
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  overflow: hidden; /* Prevent body scroll propagation */
 }
 
+/* Fixed Top Navigation */
+.tab-bar {
+  flex: 0 0 60px; /* Fixed height, non-shrinkable */
+  display: flex;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-surface-highlight);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: 0; 
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 50;
+  width: 100%;
+}
+
+/* Content Area fills the rest */
 .content-area {
   flex: 1;
-  overflow: hidden;
   position: relative;
+  overflow: hidden; /* Crucial: contain child scrolls */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Explicit height for children */
 }
 
 .tab-content {
+  flex: 1;
   height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent spillover */
 }
 
-.tab-bar {
-  display: flex;
-  background-color: #111;
-  border-top: 1px solid #333;
-  padding-bottom: env(safe-area-inset-bottom);
+.history-wrapper {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
 }
 
 .tab-btn {
   flex: 1;
   background: none;
   border: none;
-  color: #666;
-  padding: 1rem;
-  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  padding: 0 0.5rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: color 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  min-width: 60px;
+}
+
+.tab-time {
+  font-family: var(--font-nums);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .tab-btn.active {
-  color: #fff;
-  border-bottom: 3px solid #3498db;
+  color: var(--color-primary);
+  background-color: rgba(0, 255, 136, 0.05);
+  border-bottom-color: var(--color-primary);
 }
 
-.help-trigger {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 50;
-  cursor: pointer;
+.add-btn span {
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.history-btn span {
+  font-weight: 500;
+}
+
+/* Integrated Help Button */
+.help-trigger-nav {
+  width: 40px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-family: var(--font-nums);
   font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--color-surface-highlight);
+  height: 60%;
+  margin-left: 5px;
+}
+
+.help-trigger-nav:active {
+  color: var(--color-text-main);
 }
 </style>

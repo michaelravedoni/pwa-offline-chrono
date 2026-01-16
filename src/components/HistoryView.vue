@@ -172,34 +172,41 @@ const getGap = (session, index) => {
   padding: 1rem;
   height: 100%;
   overflow-y: auto;
-  padding-bottom: 5rem; /* Space for tab bar */
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
 
 .empty-state {
   text-align: center;
-  color: #666;
+  color: var(--color-text-muted);
   margin-top: 50px;
+  font-size: 1.1rem;
 }
 
 .session-card {
-  background-color: #1a1a1a;
-  border-radius: 12px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
   padding: 1rem;
   margin-bottom: 1rem;
-  border: 1px solid #333;
+  border: 1px solid var(--color-surface-highlight);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
 .session-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--color-surface-highlight);
 }
 
 .session-info h3 {
   margin: 0;
   font-size: 1.1rem;
   margin-right: 0.5rem;
+  color: var(--color-text-main);
+  font-weight: 600;
 }
 
 .title-container {
@@ -211,33 +218,39 @@ const getGap = (session, index) => {
     background: none;
     border: none;
     cursor: pointer;
-    color: #888;
-    font-size: 1rem;
-    padding: 0;
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    padding: 0 0.5rem;
+    transition: color 0.2s;
 }
 .edit-btn:hover {
-    color: #fff;
+    color: var(--color-accent);
 }
 
 .session-edit-input {
-    background: #333;
-    border: 1px solid #555;
-    color: white;
-    padding: 2px 5px;
-    border-radius: 4px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-accent);
+    color: var(--color-text-main);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
     font-size: 1rem;
     width: 200px;
+    outline: none;
 }
 
 .session-date {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--color-text-muted);
+  display: block;
+  margin-top: 0.2rem;
 }
 
 .session-total {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #3498db;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-accent); /* Cyan for total time in history */
+  font-family: var(--font-nums);
+  letter-spacing: -0.05em;
 }
 
 .delete-btn {
@@ -245,28 +258,50 @@ const getGap = (session, index) => {
   border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  color: #e74c3c;
+  color: var(--color-text-muted);
+  transition: color 0.2s;
+  padding: 0.5rem;
+}
+
+.delete-btn:hover {
+  color: var(--color-danger-dim);
 }
 
 .session-laps {
-  border-top: 1px solid #333;
   margin-top: 0.5rem;
-  padding-top: 0.5rem;
 }
 
 .lap-row {
   display: flex;
   justify-content: space-between;
-  padding: 4px 0;
-  font-size: 0.9rem;
-  color: #ccc;
+  padding: 6px 0;
+  font-size: 0.95rem;
+  color: var(--color-text-dim);
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  font-family: var(--font-nums);
+}
+
+.lap-row:last-child {
+  border-bottom: none;
 }
 
 .delete-lap-btn {
   background: none;
   border: none;
-  color: #666;
+  color: var(--color-text-muted);
   cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  padding: 0 0.5rem;
+}
+
+.lap-row:hover .delete-lap-btn {
+  opacity: 1;
+}
+
+.delete-lap-btn:hover {
+  color: var(--color-danger);
 }
 
 .lap-label-container {
@@ -274,17 +309,24 @@ const getGap = (session, index) => {
     align-items: center;
     flex-grow: 1;
     margin-left: 10px;
+    min-width: 0; /* flex text overflow fix */
+}
+
+.lap-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .edit-btn-small {
     background: none;
     border: none;
     cursor: pointer;
-    color: #666;
-    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
     margin-left: 5px;
-    opacity: 0; /* Hidden by default, shown on hover */
-    transition: opacity 0.2s;
+    opacity: 0; 
+    transition: all 0.2s;
 }
 
 .lap-row:hover .edit-btn-small {
@@ -292,7 +334,7 @@ const getGap = (session, index) => {
 }
 
 .edit-btn-small:hover {
-    color: #fff;
+    color: var(--color-accent);
 }
 
 .lap-edit-container {
@@ -301,14 +343,19 @@ const getGap = (session, index) => {
 }
 
 .lap-edit-input {
-    background: #333;
-    border: 1px solid #555;
-    color: white;
+    background: var(--color-bg);
+    border: 1px solid var(--color-surface-highlight);
+    color: var(--color-text-main);
     padding: 2px 5px;
     border-radius: 4px;
     font-size: 0.8rem;
     width: 100%;
-    max-width: 200px;
+    max-width: 150px;
+}
+
+.lap-edit-input:focus {
+    border-color: var(--color-accent);
+    outline: none;
 }
 
 .lap-metrics {
@@ -316,41 +363,44 @@ const getGap = (session, index) => {
     align-items: center;
     gap: 0.8rem;
     font-variant-numeric: tabular-nums;
+    margin-left: auto;
 }
 
 .lap-val small,
 .lap-total-time small {
     font-size: 0.7em;
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 .lap-total-time {
-    color: #888;
+    color: var(--color-text-muted);
     font-size: 0.9rem;
     min-width: 60px;
     text-align: right;
-     border-right: 1px solid #333;
+    border-right: 1px solid var(--color-surface-highlight);
     padding-right: 0.8rem;
 }
 
 .lap-gap {
     font-size: 0.8rem;
-    color: #666;
-    width: 50px; /* fixed width for alignment */
+    color: var(--color-text-muted);
+    width: 60px;
     text-align: right;
+    font-weight: 500;
 }
 
 .lap-val {
-    min-width: 60px;
+    min-width: 70px;
     text-align: right;
-    font-weight: bold;
+    font-weight: 600;
+    color: var(--color-text-main);
 }
 
 .gap-slower {
-    color: #e74c3c;
+    color: var(--color-danger);
 }
 
 .gap-faster {
-    color: #2ecc71;
+    color: var(--color-primary);
 }
 </style>
