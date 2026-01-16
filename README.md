@@ -69,6 +69,19 @@ To properly test PWA offline capabilities (Service Worker), you need to build th
 4.  In Chrome DevTools > Application > Service Workers, verify the SW is registered.
 5.  Check "Offline" in the Network tab or turn off your WiFi to verify the app acts as expected.
 
+
+### Deployment to GitHub Pages
+
+This project is configured for automated deployment via GitHub Actions.
+
+1.  **Push your changes**: Ensure the latest code (including `.github/workflows/deploy.yml` and updated `vite.config.js`) is pushed to GitHub.
+2.  **Configure GitHub Pages**:
+    - Go to your repository on GitHub.
+    - Click on **Settings** > **Pages** (in the sidebar).
+    - Under **Build and deployment** > **Source**, select **GitHub Actions**.
+    - The deployment workflow will trigger automatically on your next push.
+3.  **Visit your App**: Once the workflow completes, your app will be live at `https://michaelravedoni.github.io/pwa-offline-chrono/`.
+
 ## 📄 License
 
 MIT
