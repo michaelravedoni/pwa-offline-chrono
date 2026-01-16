@@ -2,7 +2,7 @@
 import { computed, ref, nextTick, toRefs } from 'vue'
 import { useHistory } from '../composables/useHistory'
 import { formatTime } from '../utils/time'
-import { Save, X } from 'lucide-vue-next'
+import { Save, X, Play, Square, Flag, RotateCcw } from 'lucide-vue-next'
 
 const props = defineProps({
   id: String,
@@ -210,8 +210,10 @@ const handlePointerLeave = (action) => {
         @pointerdown="handlePointerDown('secondary')"
         @pointerup="handlePointerUp('secondary')"
         @pointerleave="handlePointerLeave('secondary')"
+        aria-label="Lap or Reset"
       >
-        {{ isRunning ? 'LAP' : 'RESET' }}
+        <Flag v-if="isRunning" :size="48" stroke-width="2" />
+        <RotateCcw v-else :size="48" stroke-width="2" />
       </button>
 
       <!-- Main Button (Start/Stop) -->
@@ -221,8 +223,10 @@ const handlePointerLeave = (action) => {
         @pointerdown="handlePointerDown('main')"
         @pointerup="handlePointerUp('main')"
         @pointerleave="handlePointerLeave('main')"
+        aria-label="Start or Stop"
       >
-        {{ isRunning ? 'STOP' : 'START' }}
+        <Square v-if="isRunning" :size="48" fill="currentColor" stroke-width="0" />
+        <Play v-else :size="64" fill="currentColor" stroke-width="0" style="margin-left:8px;" />
       </button>
     </div>
   </div>
