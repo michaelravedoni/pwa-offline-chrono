@@ -105,7 +105,8 @@ const activeButtons = ref({
 })
 
 const handlePointerDown = (action) => {
-    triggerHaptic() // Feedback immédiat au toucher
+    // Haptic feedback
+    triggerHaptic()
     pressStartTimes[action] = Date.now()
     activeButtons.value[action] = true
 }
@@ -140,6 +141,9 @@ const handlePointerUp = (action) => {
             reset()
         }
     }
+
+    // Haptic feedback
+    triggerHaptic()
     
     // Cleanup
     pressStartTimes[action] = null
