@@ -38,10 +38,30 @@ export function useHistory() {
     }
   }
 
+  const updateSessionLabel = (sessionId, newLabel) => {
+    const session = sessions.value.find(s => s.id === sessionId)
+    if (session) {
+      session.label = newLabel
+    }
+  }
+
+  const updateSessionLapLabel = (sessionId, lapId, newLabel) => {
+    const session = sessions.value.find(s => s.id === sessionId)
+    if (session && session.laps) {
+      const lap = session.laps.find(l => l.id === lapId)
+      if (lap) {
+        lap.label = newLabel
+      }
+    }
+  }
+
   return {
     sessions,
     saveSession,
     deleteSession,
-    deleteSessionLap
+    deleteSession,
+    deleteSessionLap,
+    updateSessionLabel,
+    updateSessionLapLabel
   }
 }
