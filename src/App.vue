@@ -6,12 +6,32 @@ import HelpModal from './components/HelpModal.vue'
 import { useChronosStore } from './stores/chronos'
 
 const activeTab = ref(0)
-const tabs = [0, 1, 2, 3]
+const activeChronosCount = ref(1)
 const HISTORY_TAB = 4
-
 const showHelp = ref(false)
-
 const { instances: chronos } = useChronosStore()
+
+const addChrono = () => {
+  if (activeChronosCount.value < 4) {
+    activeChronosCount.value++
+    activeTab.value = activeChronosCount.value - 1
+  }
+}
+
+// Fonction utilitaire pour formater le temps dans l'onglet (MM:SS ou HH:MM:SS)
+const formatTabLabel = (ms) => {
+  if (!ms) return '00:00'
+  const seconds = Math.floor((ms / 1000) % 60)
+  const minutes = Math.floor((ms / 60000) % 60)
+  const hours = Math.floor(ms / 3600000)
+  
+  const pad = (n) => n.toString().padStart(2, '0')
+  
+  if (hours > 0) {
+    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+  }
+  return `${pad(minutes)}:${pad(seconds)}`
+}
 </script>
 
 <template>
@@ -24,42 +44,57 @@ const { instances: chronos } = useChronosStore()
 
     <!-- Tab Content -->
     <div class="content-area">
+      <!-- Dynamic Stopwatch Tabs -->
       <div 
-        v-if="activeTab !== HISTORY_TAB"
+        v-for="index in activeChronosCount"
+        :key="index - 1"
+        v-show="activeTab === index - 1"
         class="tab-content"
       >
         <StopwatchView 
-          :key="activeTab"
-          :id="`chrono-${activeTab}`" 
-          :label="`Chrono ${activeTab + 1}`" 
-          :stopwatch="chronos[activeTab]"
+          :id="`chrono-${index - 1}`" 
+          :label="`Chrono ${index}`" 
+          :stopwatch="chronos[index - 1]"
         />
       </div>
       
       <!-- History Tab -->
-      <div v-if="activeTab === HISTORY_TAB" class="tab-content">
+      <div v-show="activeTab === HISTORY_TAB" class="tab-content">
           <HistoryView />
       </div>
     </div>
 
     <!-- Navigation Tabs -->
     <nav class="tab-bar">
+      <!-- Dynamic Chrono Tabs -->
       <button 
-        v-for="index in tabs" 
-        :key="index"
+        v-for="i in activeChronosCount" 
+        :key="i - 1"
         class="tab-btn"
-        :class="{ active: activeTab === index }"
-        @click="activeTab = index"
+        :class="{ active: activeTab === i - 1 }"
+        @click="activeTab = i - 1"
       >
-        <span>⏱ {{ index + 1 }}</span>
+        <!-- Utilisation de la valeur 'elapsedTime' du chrono correspondant -->
+        <span class="tab-time">{{ formatTabLabel(chronos[i-1].elapsedTime) }}</span>
       </button>
 
+      <!-- Add Button -->
       <button 
-        class="tab-btn"
+        v-if="activeChronosCount < 4" 
+        class="tab-btn add-btn"
+        @click="addChrono"
+        title="Ajouter un chrono"
+      >
+        <span>+</span>
+      </button>
+
+      <!-- History Tab -->
+      <button 
+        class="tab-btn history-btn"
         :class="{ active: activeTab === HISTORY_TAB }"
         @click="activeTab = HISTORY_TAB"
       >
-        <span>📜 Historique</span>
+        <span>Hist.</span>
       </button>
     </nav>
   </main>

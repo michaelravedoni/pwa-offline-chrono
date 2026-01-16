@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, nextTick } from 'vue'
+import { computed, ref, nextTick, toRefs } from 'vue'
 import { useHistory } from '../composables/useHistory'
 import { formatTime } from '../utils/time'
 
@@ -14,13 +14,16 @@ const {
   stop, 
   reset, 
   addLap, 
-  deleteLap,
+  deleteLap
+} = props.stopwatch
+
+const {
   elapsedTime, 
   isRunning, 
   laps,
   startTime,
   sessionStartTime
-} = props.stopwatch // Destructure from prop instead of calling hook
+} = toRefs(props.stopwatch)
 // startTime needed to check if reset? actually elapsedTime is enough.
 
 const { saveSession } = useHistory()
