@@ -53,6 +53,22 @@
 
 This app is installable! On mobile, use "Add to Home Screen" to install it as a standalone app.
 
+### Testing Offline Mode
+
+To properly test PWA offline capabilities (Service Worker), you need to build the app, as Service Workers are typically not enabled in development mode by default.
+
+1.  Build the app:
+    ```bash
+    npm run build
+    ```
+2.  Preview the production build locally:
+    ```bash
+    npm run preview
+    ```
+3.  Open the URL provided (usually http://localhost:4173/).
+4.  In Chrome DevTools > Application > Service Workers, verify the SW is registered.
+5.  Check "Offline" in the Network tab or turn off your WiFi to verify the app acts as expected.
+
 ## 📄 License
 
 MIT
