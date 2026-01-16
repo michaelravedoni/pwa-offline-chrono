@@ -3,6 +3,7 @@ import { computed, ref, nextTick, toRefs } from 'vue'
 import { useHistory } from '../composables/useHistory'
 import { formatTime } from '../utils/time'
 import { Save, X, Play, Square, Flag, RotateCcw } from 'lucide-vue-next'
+import { triggerHaptic } from '../utils/haptics'
 
 const props = defineProps({
   id: String,
@@ -104,6 +105,7 @@ const activeButtons = ref({
 })
 
 const handlePointerDown = (action) => {
+    triggerHaptic() // Feedback immédiat au toucher
     pressStartTimes[action] = Date.now()
     activeButtons.value[action] = true
 }
