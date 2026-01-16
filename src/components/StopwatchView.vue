@@ -51,7 +51,7 @@ const handleLapAction = () => {
 }
 
 const openSaveDialog = () => {
-    sessionLabel.value = `Session ${new Date(sessionStartTime.value || Date.now()).toLocaleString()}`
+    sessionLabel.value = `Session ${new Date(sessionStartTime.value || Date.now()).toLocaleString('fr-CH', {timeStyle: "short"})}`
     showSaveDialog.value = true
     nextTick(() => {
         nameInput.value?.focus()
@@ -59,10 +59,31 @@ const openSaveDialog = () => {
 }
 
 const confirmSave = () => {
+    const lapsToSave = JSON.parse(JSON.stringify(laps.value)) // Deep copy
+    const currentTotal = elapsedTime.value
+    
+    // Check if we need a final lap
+    // Logic: if totalTime of last lap < currentTotal, we have a remainder.
+    const lastLapTotal = lapsToSave.length > 0 ? lapsToSave[lapsToSave.length - 1].totalTime : 0
+    
+    if (lapsToSave.length === 0 || currentTotal > lastLapTotal) {
+        const diff = currentTotal - lastLapTotal
+        // Only add if diff is significant (e.g. > 10ms) to avoid rounding jitter? 
+        // Or just add it.
+        if (diff > 0) {
+            lapsToSave.push({
+                id: crypto.randomUUID(),
+                totalTime: currentTotal,
+                lapTime: diff,
+                label: 'Final'
+            })
+        }
+    }
+
     saveSession({
         label: sessionLabel.value,
-        totalTime: elapsedTime.value,
-        laps: JSON.parse(JSON.stringify(laps.value)), // Deep copy
+        totalTime: currentTotal,
+        laps: lapsToSave,
         startTime: sessionStartTime.value || Date.now() 
     })
     showSaveDialog.value = false
@@ -141,9 +162,9 @@ const handlePointerLeave = (action) => {
     <!-- Laps List (Scrollable area) -->
     <div class="laps-container" v-if="laps.length > 0">
         <div v-for="(lap, index) in laps.slice().reverse()" :key="lap.id" class="lap-item">
-            <span class="lap-number">#{{ laps.length - index }}</span>
+            <span class="lap-number">T{{ laps.length - index }}</span>
             <span class="lap-time">{{ formatTime(lap.lapTime).formattedMain }}.{{ formatTime(lap.lapTime).formattedSub }}</span>
-            <span class="total-time">{{ formatTime(lap.totalTime).formattedMain }}</span>
+            <span class="total-time">{{ formatTime(lap.totalTime).formattedMain }}.{{ formatTime(lap.totalTime).formattedSub }}</span>
             <button @click="deleteLap(laps.length - 1 - index)" class="delete-lap">×</button>
         </div>
     </div>

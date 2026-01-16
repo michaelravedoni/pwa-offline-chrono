@@ -19,7 +19,12 @@ export function formatTime(ms) {
   // If hours > 0, show hours? "4 maximum" chronos might mean long duration.
   // Standard chrono: MM:SS.cc. If hours, HH:MM:SS.
   
-  let main = `${pad(minutes)}:${pad(seconds)}`
+  let main = pad(seconds)
+  
+  if (minutes > 0 || hours > 0 || ms === 0) {
+      main = `${pad(minutes)}:${main}`
+  }
+  
   if (hours > 0) {
       main = `${pad(hours)}:${main}`
   }

@@ -77,7 +77,7 @@ export function useStopwatch() {
           id: crypto.randomUUID(),
           totalTime: current,
           lapTime: lapDuration,
-          label: label || `Tour ${laps.value.length + 1}`
+          label: label || `T${laps.value.length + 1}`
       })
   }
 

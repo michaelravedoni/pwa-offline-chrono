@@ -54,6 +54,43 @@ const cancelEditLap = () => {
 const formatDate = (ts) => {
   return new Date(ts).toLocaleString()
 }
+
+const getGap = (session, index) => {
+  if (index === 0) return null
+  const currentLap = session.laps[index]
+  const prevLap = session.laps[index - 1]
+  const diff = currentLap.lapTime - prevLap.lapTime
+  
+  const absDiff = Math.abs(diff)
+  const formatted = formatTime(absDiff)
+  
+  // Reuse formatTime but specifically we want SS.cc
+  // formatTime returns hours, minutes, seconds, centiseconds
+  // Let's construct a string manually for the gap to ensure it's compact? 
+  // Actually formatTime's formattedMain is MM:SS or HH:MM:SS. 
+  // For gap we probably want just S.cc or SS.cc if < 1 min.
+  
+  // Let's keep it simple: Use formatTime components
+  const sign = diff > 0 ? '+' : '-'
+  
+  // formatted.formattedSub is already padded to 2 digits (centiseconds)
+  // formatted.seconds is unpadded integer? No, wait. 
+  
+  // Let's manually construct to be safe and ensure 2 decimals.
+  // We want to show seconds and centiseconds.
+  // If > 60s, we might want minutes? "Gap" is usually small.
+  // User said "Trop de décimales (deux suffisent)".
+  
+  // Re-calculate simpler:
+  const totalSeconds = absDiff / 1000
+  const totalSecondsFixed = totalSeconds.toFixed(2)
+  
+  return {
+      text: `${sign}${totalSecondsFixed}`,
+      isSlower: diff > 0,
+      isFaster: diff < 0
+  }
+}
 </script>
 
 <template>
@@ -92,8 +129,6 @@ const formatDate = (ts) => {
 
         <div class="session-laps" v-if="session.laps && session.laps.length > 0">
           <div v-for="(lap, idx) in session.laps" :key="lap.id" class="lap-row">
-            <span class="lap-idx">#{{ idx + 1 }}</span>
-            
             <div v-if="editingLapId === lap.id" class="lap-edit-container">
                  <input 
                     v-model="editLapName"
@@ -108,7 +143,22 @@ const formatDate = (ts) => {
                 <span class="lap-label">{{ lap.label }}</span>
                 <button class="edit-btn-small" @click="startEditLap(session, lap)">✎</button>
             </div>
-            <span class="lap-val">{{ formatTime(lap.lapTime).formattedMain }}</span>
+            
+            <div class="lap-metrics">
+                <span class="lap-total-time">
+                    {{ formatTime(lap.totalTime).formattedMain }}<small>.{{ formatTime(lap.totalTime).formattedSub }}</small>
+                </span>
+
+                <span class="lap-gap" :class="{ 'gap-slower': getGap(session, idx)?.isSlower, 'gap-faster': getGap(session, idx)?.isFaster }">
+                    <template v-if="idx > 0">{{ getGap(session, idx)?.text }}</template>
+                    <template v-else>-</template>
+                </span>
+                
+                <span class="lap-val">
+                    {{ formatTime(lap.lapTime).formattedMain }}<small>.{{ formatTime(lap.lapTime).formattedSub }}</small>
+                </span>
+            </div>
+            
             <button class="delete-lap-btn" @click="deleteSessionLap(session.id, lap.id)">×</button>
           </div>
         </div>
@@ -259,5 +309,48 @@ const formatDate = (ts) => {
     font-size: 0.8rem;
     width: 100%;
     max-width: 200px;
+}
+
+.lap-metrics {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.lap-val small,
+.lap-total-time small {
+    font-size: 0.7em;
+    opacity: 0.8;
+}
+
+.lap-total-time {
+    color: #888;
+    font-size: 0.9rem;
+    min-width: 60px;
+    text-align: right;
+     border-right: 1px solid #333;
+    padding-right: 0.8rem;
+}
+
+.lap-gap {
+    font-size: 0.8rem;
+    color: #666;
+    width: 50px; /* fixed width for alignment */
+    text-align: right;
+}
+
+.lap-val {
+    min-width: 60px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.gap-slower {
+    color: #e74c3c;
+}
+
+.gap-faster {
+    color: #2ecc71;
 }
 </style>
