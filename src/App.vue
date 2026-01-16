@@ -5,6 +5,7 @@ import HistoryView from './components/HistoryView.vue'
 import HelpModal from './components/HelpModal.vue'
 import { useChronosStore } from './stores/chronos'
 import { Plus, History, HelpCircle } from 'lucide-vue-next'
+import ReloadPrompt from './components/ReloadPrompt.vue'
 
 const activeTab = ref(0)
 const activeChronosCount = ref(1)
@@ -99,6 +100,9 @@ const formatTabLabel = (ms) => {
           <HistoryView />
       </div>
     </div>
+
+    <!-- PWA Update Prompt -->
+    <ReloadPrompt />
   </main>
 </template>
 
