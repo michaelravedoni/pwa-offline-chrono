@@ -15,22 +15,22 @@ export function useStopwatch() {
     }
   }
 
-  const start = () => {
+  const start = (timestamp = Date.now()) => {
     if (isRunning.value) return
     
     if (accumulatedTime.value === 0 && !sessionStartTime.value) {
-        sessionStartTime.value = Date.now()
+        sessionStartTime.value = timestamp
     }
     
-    startTime.value = Date.now()
+    startTime.value = timestamp
     isRunning.value = true
     updateNow()
   }
 
-  const stop = () => {
+  const stop = (timestamp = Date.now()) => {
     if (!isRunning.value) return
     if (startTime.value) {
-        accumulatedTime.value += Date.now() - startTime.value
+        accumulatedTime.value += timestamp - startTime.value
     }
     startTime.value = null
     isRunning.value = false
@@ -57,12 +57,18 @@ export function useStopwatch() {
   // Laps logic
   const laps = ref([])
   
-  const addLap = (label = '') => {
-      const current = elapsedTime.value
-      // Calculate lap duration (current time - sum of previous laps? or just split time?)
-      // User requirement says "lap/interval". Usually lap is time since last lap.
-      // Split is total time.
-      // Let's store both absolute time and lap duration.
+  const addLap = (label = '', timestamp = Date.now()) => {
+      // If valid start time, calc exact elapsed at 'timestamp'.
+      // Otherwise fallback to current value. 
+      // NOTE: elapsedTime.value uses 'now.value' which is updated by RAF.
+      // For precision, we should recalc manually using the passed timestamp.
+      
+      let current
+      if (isRunning.value && startTime.value) {
+         current = accumulatedTime.value + (timestamp - startTime.value)
+      } else {
+         current = elapsedTime.value
+      }
       
       const lastLapEndTime = laps.value.length > 0 ? laps.value[laps.value.length - 1].totalTime : 0
       const lapDuration = current - lastLapEndTime

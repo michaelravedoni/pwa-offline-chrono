@@ -9,6 +9,7 @@
 
 - **Multi-Stopwatch**: Manage up to 4 independent stopwatches simultaneously.
 - **Mobile-First UX**: Massive touch targets for Start/Stop/Lap, optimized for mobile use.
+- **Smart Trigger**: Intelligent button response distinguishing between taps (retroactive zero-latency) and long presses (release sync).
 - **Offline Ready**: Fully functional PWA that works without an internet connection.
 - **High Precision**: Drift-free timing using `Date.now()` differences, resilient to device sleep/backgrounding.
 - **History & Persistence**: Save your sessions and laps locally.

@@ -67,10 +67,63 @@ const confirmSave = () => {
     // reset() 
 }
 
-// Touch handling for better responsiveness
-const onTouch = (action) => {
-    if (action === 'main') handleMainAction()
-    if (action === 'secondary') handleLapAction()
+// Smart Trigger Logic
+const pressStartTimes = {
+    main: null,
+    secondary: null
+}
+
+const activeButtons = ref({
+    main: false,
+    secondary: false
+})
+
+const handlePointerDown = (action) => {
+    pressStartTimes[action] = Date.now()
+    activeButtons.value[action] = true
+}
+
+const handlePointerUp = (action) => {
+    // Visual feedback off
+    activeButtons.value[action] = false
+    
+    const pressStart = pressStartTimes[action]
+    if (!pressStart) return // Should not happen if flow is correct
+
+    const now = Date.now()
+    const duration = now - pressStart
+    
+    // Threshold for "Long Press" vs "Short Tap"
+    const LONG_PRESS_THRESHOLD = 200 
+    
+    // If Short Tap (< 200ms), we use the PRESS START time (retroactive)
+    // If Long Press (>= 200ms), we use the RELEASE time (now)
+    const effectiveTimestamp = (duration < LONG_PRESS_THRESHOLD) ? pressStart : now
+
+    if (action === 'main') {
+        if (isRunning.value) {
+            stop(effectiveTimestamp)
+        } else {
+            start(effectiveTimestamp)
+        }
+    } else if (action === 'secondary') {
+        if (isRunning.value) {
+            addLap('', effectiveTimestamp)
+        } else {
+            reset()
+        }
+    }
+    
+    // Cleanup
+    pressStartTimes[action] = null
+}
+
+const handlePointerLeave = (action) => {
+    // If finger slides off button, cancel action
+    if (activeButtons.value[action]) {
+        activeButtons.value[action] = false
+        pressStartTimes[action] = null
+    }
 }
 </script>
 
@@ -119,8 +172,10 @@ const onTouch = (action) => {
       <!-- Secondary Button (Lap/Reset) -->
       <button 
         class="btn secondary" 
-        @touchstart.prevent="onTouch('secondary')" 
-        @mousedown="onTouch('secondary')"
+        :class="{ active: activeButtons.secondary }"
+        @pointerdown="handlePointerDown('secondary')"
+        @pointerup="handlePointerUp('secondary')"
+        @pointerleave="handlePointerLeave('secondary')"
       >
         {{ isRunning ? 'LAP' : 'RESET' }}
       </button>
@@ -128,9 +183,10 @@ const onTouch = (action) => {
       <!-- Main Button (Start/Stop) -->
       <button 
         class="btn primary" 
-        :class="{ running: isRunning }"
-        @touchstart.prevent="onTouch('main')"
-        @mousedown="onTouch('main')"
+        :class="{ running: isRunning, active: activeButtons.main }"
+        @pointerdown="handlePointerDown('main')"
+        @pointerup="handlePointerUp('main')"
+        @pointerleave="handlePointerLeave('main')"
       >
         {{ isRunning ? 'STOP' : 'START' }}
       </button>
@@ -204,8 +260,9 @@ const onTouch = (action) => {
   -webkit-tap-highlight-color: transparent;
 }
 
-.btn:active {
+.btn:active, .btn.active {
   opacity: 0.7;
+  transform: scale(0.98);
 }
 
 .primary {

@@ -5,7 +5,9 @@ Application web progressive (PWA) de chronométrage multiple (jusqu'à 4), conç
 
 ## 2. Fonctionnalités Principales
 - **Chronomètres Multiples** : 4 chronomètres indépendants, accessibles via des onglets ou une navigation fluide.
-- **Contrôles Tactiles** : Boutons "Start", "Lap", "Stop" prenant une grande partie de l'écran. Déclenchement au `touchstart` (ou `touchend` configurable pour une UX parfaite).
+- **Contrôles Tactiles** : Boutons "Start", "Lap", "Stop" prenant une grande partie de l'écran. UX "Smart Trigger" :
+  - **Appui court** (< 200ms) : Déclenchement au relâchement avec calcul rétroactif basé sur le `touchstart` (latence perçue nulle).
+  - **Appui long** (>= 200ms) : Déclenchement au relâchement (`touchend`) pour synchronisation précise.
 - **Affichage** : Temps affiché en très grand. Lisibilité maximale.
 - **Précision & Background** : Le temps est calculé par différence (`Date.now()`) pour rester juste même si le thread JS est suspendu (écran verrouillé, changement d'onglet).
 - **Historique** :
