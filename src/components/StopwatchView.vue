@@ -2,6 +2,7 @@
 import { computed, ref, nextTick, toRefs } from 'vue'
 import { useHistory } from '../composables/useHistory'
 import { formatTime } from '../utils/time'
+import { Save, X } from 'lucide-vue-next'
 
 const props = defineProps({
   id: String,
@@ -161,7 +162,7 @@ const handlePointerLeave = (action) => {
 
     <!-- Save Button Overlay (Absolute) -->
     <button v-if="!isRunning && elapsedTime > 0 && !showSaveDialog" class="save-overlay-btn" @click="openSaveDialog">
-        Enregistrer
+        <Save :size="16" style="margin-right:4px;" /> Enregistrer
     </button>
 
     <!-- Laps List (Scrollable area) -->
@@ -170,7 +171,9 @@ const handlePointerLeave = (action) => {
             <span class="lap-number">T{{ laps.length - index }}</span>
             <span class="lap-time">{{ formatTime(lap.lapTime).formattedMain }}.{{ formatTime(lap.lapTime).formattedSub }}</span>
             <span class="total-time">{{ formatTime(lap.totalTime).formattedMain }}.{{ formatTime(lap.totalTime).formattedSub }}</span>
-            <button @click="deleteLap(laps.length - 1 - index)" class="delete-lap">×</button>
+            <button @click="deleteLap(laps.length - 1 - index)" class="delete-lap">
+                <X :size="18" />
+            </button>
         </div>
         
         <div style="height: 1rem;"></div> 

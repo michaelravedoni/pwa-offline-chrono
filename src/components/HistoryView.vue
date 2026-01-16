@@ -2,6 +2,7 @@
 import { ref, nextTick } from 'vue'
 import { useHistory } from '../composables/useHistory'
 import { formatTime } from '../utils/time'
+import { Edit2, Trash2, X } from 'lucide-vue-next'
 
 const { sessions, deleteSession, deleteSessionLap, updateSessionLabel, updateSessionLapLabel } = useHistory()
 
@@ -117,14 +118,18 @@ const getGap = (session, index) => {
             </div>
             <div v-else class="title-container">
                <h3>{{ session.label || 'Session sans nom' }}</h3>
-               <button class="edit-btn" @click="startEditSession(session)">✎</button>
+               <button class="edit-btn" @click="startEditSession(session)">
+                 <Edit2 :size="12" />
+               </button>
             </div>
             <span class="session-date">{{ formatDate(session.timestamp) }}</span>
           </div>
           <div class="session-total">
             {{ formatTime(session.totalTime).formattedMain }}.{{ formatTime(session.totalTime).formattedSub }}
           </div>
-          <button class="delete-btn" @click="deleteSession(session.id)">🗑</button>
+          <button class="delete-btn" @click="deleteSession(session.id)">
+            <Trash2 :size="16" />
+          </button>
         </div>
 
         <div class="session-laps" v-if="session.laps && session.laps.length > 0">
@@ -141,7 +146,9 @@ const getGap = (session, index) => {
             </div>
             <div v-else class="lap-label-container">
                 <span class="lap-label">{{ lap.label }}</span>
-                <button class="edit-btn-small" @click="startEditLap(session, lap)">✎</button>
+                <button class="edit-btn-small" @click="startEditLap(session, lap)">
+                  <Edit2 :size="12" />
+                </button>
             </div>
             
             <div class="lap-metrics">
@@ -159,7 +166,9 @@ const getGap = (session, index) => {
                 </span>
             </div>
             
-            <button class="delete-lap-btn" @click="deleteSessionLap(session.id, lap.id)">×</button>
+            <button class="delete-lap-btn" @click="deleteSessionLap(session.id, lap.id)">
+              <X :size="16" />
+            </button>
           </div>
         </div>
       </div>

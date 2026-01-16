@@ -4,6 +4,7 @@ import StopwatchView from './components/StopwatchView.vue'
 import HistoryView from './components/HistoryView.vue'
 import HelpModal from './components/HelpModal.vue'
 import { useChronosStore } from './stores/chronos'
+import { Plus, History, HelpCircle } from 'lucide-vue-next'
 
 const activeTab = ref(0)
 const activeChronosCount = ref(1)
@@ -56,7 +57,7 @@ const formatTabLabel = (ms) => {
         @click="addChrono"
         title="Ajouter un chrono"
       >
-        <span>+</span>
+        <Plus :size="24" />
       </button>
 
       <!-- History Tab -->
@@ -65,11 +66,13 @@ const formatTabLabel = (ms) => {
         :class="{ active: activeTab === HISTORY_TAB }"
         @click="activeTab = HISTORY_TAB"
       >
-        <span>Hist.</span>
+        <History :size="20" />
       </button>
 
       <!-- Help Button (Integrated in Nav) -->
-      <button class="help-trigger-nav" @click="showHelp = true">?</button>
+      <button class="help-trigger-nav" @click="showHelp = true">
+          <HelpCircle :size="20" />
+      </button>
     </nav>
 
     <!-- Help Modal -->
